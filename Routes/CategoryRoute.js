@@ -1,7 +1,5 @@
-// node.js frameWork
 const express = require("express");
-// const app = express();
-
+const asyncHandler = require("express-async-handler");
 const {
   getCategories,
   getCategoryById,
@@ -10,12 +8,21 @@ const {
   deleteCategory,
 } = require("../services/categoryService");
 
+const {
+  getCategoryByIdValidator,
+} = require("../utils/validators/categoryValidator");
+
 const router = express.Router();
 
-router.route("/").get(getCategories).post(createCategory);
+router
+  .route("/")
+  .get(asyncHandler(getCategories))
+  .post(asyncHandler(createCategory));
+
 router
   .route("/:id")
-  .get(getCategoryById)
-  .put(updateCategory)
-  .delete(deleteCategory);
+  .get(getCategoryByIdValidator, asyncHandler(getCategoryById))
+  .put(getCategoryByIdValidator, asyncHandler(updateCategory)) 
+  .delete(getCategoryByIdValidator, asyncHandler(deleteCategory)); 
+
 module.exports = router;

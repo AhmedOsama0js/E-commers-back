@@ -34,6 +34,16 @@ app.all("*", (req, res, next) => {
 });
 
 const PORT = process.env.PORT || 8888;
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
   console.log(`welcome to my server run port:${PORT}`);
+});
+
+// handling global error
+
+process.on("unhandledRejection", (err) => {
+  console.error(`Unhandled Rejection: ${err.name} | ${err.message}`);
+  server.close(() => {
+    console.error(`Shutting Down...`);
+    process.exit(1);
+  });
 });
